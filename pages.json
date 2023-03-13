@@ -16,7 +16,16 @@
 				"navigationBarTitleText": "添加项目"
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/projectInfo/projectInfo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "项目详情",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"tabBar": {
 		"color": "#7A7E83",
 		"selectedColor": "#3cc51f",

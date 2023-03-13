@@ -4,7 +4,7 @@
 		<tui-swipe-action :actions="actions" @click="handlerButton" v-for="(item,index) in projects" :key="index"
 			:params="item">
 			<template v-slot:content>
-				<view class="tui-list-item">
+				<view class="tui-list-item" @click="showProjectInfo(item.name)">
 					<image :src="'/static/images/news/1.jpg'" class="item-img"></image>
 					<view class="item-box">
 						<view class="item-title">{{item.name}}</view>
@@ -67,6 +67,14 @@
 
 		},
 		methods: {
+			showProjectInfo(name) {
+				uni.navigateTo({
+					url: '/pages/projectInfo/projectInfo?name=' + name,
+					success: res => {},
+					fail: () => {},
+					complete: () => {}
+				});
+			},
 			handlerButton(e) {
 				let index = e.index;
 				let item = e.item;
@@ -79,7 +87,7 @@
 
 				}
 				let menuTxt = ["删除", "修改", "收藏"][index];
-				this.tui.toast(`${menuTxt}成功`,1000,'success');
+				this.tui.toast(`${menuTxt}成功`, 1000, 'success');
 				// setTimeout(() => {
 				// 	this.closable= this.closable ? false : true
 				// }, 200)
@@ -89,7 +97,7 @@
 				uni.navigateTo({
 					url: '/pages/addProject/addProject',
 					success: res => {
-						console.log(res);
+						// console.log(res);
 					},
 					fail: () => {},
 					complete: () => {}
