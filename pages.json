@@ -5,27 +5,25 @@
 			"style": {
 				"navigationBarTitleText": "超级日程"
 			}
-		},{
+		}, {
 			"path": "pages/me/me",
 			"style": {
 				"navigationBarTitleText": "我的"
 			}
-		},{
+		}, {
 			"path": "pages/addProject/addProject",
 			"style": {
 				"navigationBarTitleText": "添加项目"
 			}
+		}, {
+			"path": "pages/projectInfo/projectInfo",
+			"style": {
+				"navigationBarTitleText": "项目详情",
+				"enablePullDownRefresh": false
+			}
+
 		}
-	    ,{
-            "path" : "pages/projectInfo/projectInfo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "项目详情",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	],
 	"tabBar": {
 		"color": "#7A7E83",
 		"selectedColor": "#3cc51f",

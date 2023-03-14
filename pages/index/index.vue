@@ -5,7 +5,7 @@
 			:params="item">
 			<template v-slot:content>
 				<view class="tui-list-item" @click="showProjectInfo(item.name)">
-					<image :src="'/static/images/news/1.jpg'" class="item-img"></image>
+					<image :src="(item.imagePath || '/static/images/basic/layout.png')" class="item-img"></image>
 					<view class="item-box">
 						<view class="item-title">{{item.name}}</view>
 						<view class="item-time">{{ item.createTime }}</view>

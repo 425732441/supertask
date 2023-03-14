@@ -8,7 +8,7 @@
 		</view>
 		<tui-datetime ref="dateTime" :type="type" :unitTop="false" :radius="false"
 			@confirm="changeDateTime"></tui-datetime> -->
-		<tui-upload @complete="uploadComplete" :value="project.imagePaths"></tui-upload>
+		<tui-upload @complete="uploadComplete"></tui-upload>
 		<tui-button @click="saveProject">保存</tui-button>
 	</view>
 </template>
@@ -25,7 +25,7 @@
 				project: {
 					name: '',
 					createTime: '',
-					imagePaths: []
+					imagePath: ''
 				}
 
 			}
@@ -76,6 +76,10 @@
 			},
 			uploadComplete(param) {
 				console.log(param);
+				if (param.status === 1) {
+					const filePaths = param.imgArr;
+					this.project.imagePath = filePaths[0];
+				}
 			}
 
 		},
