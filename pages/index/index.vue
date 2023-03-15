@@ -1,9 +1,15 @@
 <template>
 	<view class="container">
-		<tui-no-data v-if="projects.length <=0" imgUrl="/static/images/toast/img_nodata.png">暂无数据</tui-no-data>
-		<tui-swipe-action :actions="actions" @click="handlerButton" v-for="(item,index) in projects" :key="index"
-			:params="item">
-			<template v-slot:content>
+		<z-no-data v-if="projects.length <=0" imgUrl="/static/images/toast/img_nodata.png">暂无数据</z-no-data>
+		<uni-swipe-action>
+			<uni-swipe-action-item :right-options="actions" @click="handlerButton($event,item)"
+				v-for="(item,index) in projects" :key="index" :auto-close="true">
+				<!-- <template v-slot:left>
+					<view><text>置顶</text></view>
+				</template>
+				<template v-slot:right>
+					<view @click="deleteProject(item)"><text>删除</text></view>
+				</template> -->
 				<view class="tui-list-item" @click="showProjectInfo(item.name)">
 					<image :src="(item.imagePath || '/static/images/basic/layout.png')" class="item-img"></image>
 					<view class="item-box">
@@ -11,9 +17,9 @@
 						<view class="item-time">{{ item.createTime }}</view>
 					</view>
 				</view>
-			</template>
-		</tui-swipe-action>
-		<tui-fab @click="clickFab"></tui-fab>
+			</uni-swipe-action-item>
+		</uni-swipe-action>
+		<uni-fab horizontal="right" @fabClick="clickFab"></uni-fab>
 	</view>
 </template>
 
@@ -23,18 +29,22 @@
 		data() {
 			return {
 				actions: [{
-						name: '删除',
-						color: '#fff',
-						fontsize: 30, //单位rpx
-						width: 70, //单位px
-						background: '#FD3B31'
+						text: '删除',
+						style: {
+							color: '#fff',
+							fontsize: 30, //单位rpx
+							width: 70, //单位px
+							backgroundColor: '#FD3B31'
+						}
 					},
 					{
-						name: '修改',
-						width: 70,
-						fontsize: 30,
-						color: '#fff',
-						background: '#C8C7CD'
+						text: '修改',
+						style: {
+							width: 70,
+							fontsize: 30,
+							color: '#fff',
+							backgroundColor: '#C8C7CD'
+						}
 					}
 				],
 				projects: [],
@@ -75,22 +85,22 @@
 					complete: () => {}
 				});
 			},
-			handlerButton(e) {
+			handlerButton(e, item) {
+				console.log(e);
 				let index = e.index;
-				let item = e.item;
-
+				let menuTxt = ["删除", "修改", "收藏"][index];
 				if (index === 0) {
 					// delete
-					const index = this.projects.findIndex(i => i.name === item.name);
-					this.projects.splice(index, 1);
-					storage.setProjectInfoToStorage(this.projects);
-
+					this.deleteProject(item);
+					uni.showToast({
+						title: `${menuTxt}成功`,
+					});
 				}
-				let menuTxt = ["删除", "修改", "收藏"][index];
-				this.tui.toast(`${menuTxt}成功`, 1000, 'success');
-				// setTimeout(() => {
-				// 	this.closable= this.closable ? false : true
-				// }, 200)
+			},
+			deleteProject(item) {
+				const i = this.projects.findIndex(i => i.name === item.name);
+				this.projects.splice(i, 1);
+				storage.setProjectInfoToStorage(this.projects);
 			},
 			clickFab(index) {
 				// this.projects.push({id:11});

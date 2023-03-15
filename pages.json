@@ -40,12 +40,6 @@
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
 	},
-	"easycom": {
-		"autoscan": true,
-		"custom": {
-			"tui-(.*)": "@/components/thorui/tui-$1/tui-$1.vue"
-		}
-	},
 	"uniIdRouter": {}
 }
 

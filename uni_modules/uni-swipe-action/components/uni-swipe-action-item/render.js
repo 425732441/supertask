@@ -268,3 +268,4 @@ export default {
 		state.direction = state.direction || this.getDirection(state.offsetX, state.offsetY);
 	}
 }
+

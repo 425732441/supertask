@@ -1,6 +1,8 @@
 <template>
-	<view>
-		<tui-input placeholder="请输入项目名称" v-model="project.name"></tui-input>
+	<view class="content">
+		<uni-section title="项目名称" sub-title="请输入项目的名称,不可与已有项目名称重复" type="line">
+			<uni-easyinput focus placeholder="请输入项目名称" v-model="project.name" />
+		</uni-section>
 		<!-- <view class="tui-btn-box">
 			<view class="tui-btn-btm">
 				<tui-button type="white" shape="circle" @click="showDtPicker">日期+时间</tui-button>
@@ -8,8 +10,10 @@
 		</view>
 		<tui-datetime ref="dateTime" :type="type" :unitTop="false" :radius="false"
 			@confirm="changeDateTime"></tui-datetime> -->
-		<tui-upload @complete="uploadComplete" :limit="1"></tui-upload>
-		<tui-button @click="saveProject">保存</tui-button>
+		<uni-section title="项目图标" sub-title="请选择一张图片作为项目图标" type="line">
+			<uni-file-picker fileMediatype="image" mode="grid" @select="uploadComplete" @fail="fail" :limit="1" />
+		</uni-section>
+		<button @click="saveProject">保存</button>
 	</view>
 </template>
 
@@ -25,7 +29,8 @@
 				project: {
 					name: '',
 					createTime: '',
-					imagePath: ''
+					imagePath: '',
+					imagePaths: null
 				}
 
 			}
@@ -85,10 +90,8 @@
 
 			},
 			uploadComplete(param) {
-				if (param.status === 1) {
-					const filePaths = param.imgArr;
-					this.project.imagePath = filePaths[0];
-				}
+				const filePaths = param.tempFilePaths;
+				this.project.imagePath = filePaths[0];
 			}
 
 		},
@@ -105,7 +108,7 @@
 
 </script>
 
-<style>
+<style scoped lang="scss">
 	.tui-btn-box {
 		padding: 10rpx 40rpx;
 		box-sizing: border-box;
