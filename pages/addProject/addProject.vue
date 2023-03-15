@@ -38,7 +38,7 @@
 				this.$refs.dateTime.show();
 
 			},
-			checkParam() {
+			checkBeforeSave() {
 				if (!this.project.name) {
 					uni.showToast({
 						title: '请填写项目名称!',
@@ -46,7 +46,19 @@
 					});
 					return false;
 				}
+				if (!this.checkNameDuplicate()) {
+					uni.showToast({
+						title: '项目名称重复!',
+						icon: 'error'
+					});
+					return false;
+				}
 				return true;
+			},
+			checkNameDuplicate() {
+
+				console.log(storage.getProjectInfoByName(this.project.name));
+				return !storage.getProjectInfoByName(this.project.name);
 			},
 			addProjectInfoToStorage() {
 				this.project.createTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
@@ -60,7 +72,7 @@
 				storage.setProjectInfoToStorage(projects);
 			},
 			saveProject() {
-				if (this.checkParam()) {
+				if (this.checkBeforeSave()) {
 					this.addProjectInfoToStorage();
 
 					uni.switchTab({
