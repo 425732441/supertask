@@ -4,12 +4,6 @@
 		<uni-swipe-action>
 			<uni-swipe-action-item :right-options="actions" @click="handlerButton($event,item)"
 				v-for="(item,index) in projects" :key="index" :auto-close="true">
-				<!-- <template v-slot:left>
-					<view><text>置顶</text></view>
-				</template>
-				<template v-slot:right>
-					<view @click="deleteProject(item)"><text>删除</text></view>
-				</template> -->
 				<view class="tui-list-item" @click="showProjectInfo(item.name)">
 					<image :src="(item.imagePath || '/static/images/basic/layout.png')" class="item-img"></image>
 					<view class="item-box">
@@ -48,30 +42,11 @@
 					}
 				],
 				projects: [],
-				title: 'Hello',
-				/* btnList: [{
-					bgColor: "#16C2C2",
-					//名称
-					text: "关于",
-					//字体大小
-					fontSize: 28,
-					//字体颜色
-					color: "#fff"
-				}, {
-					bgColor: "#64B532",
-					//名称
-					text: "分享",
-					//字体大小
-					fontSize: 28,
-					//字体颜色
-					color: "#fff"
-				}] */
+				title: 'Hello'
 			}
 		},
 		onShow() {
 			this.projects = storage.getProjectsFromStorage() || [];
-			console.log(this.projects);
-
 		},
 		onLoad() {
 
