@@ -8,7 +8,7 @@
 		</view>
 		<tui-datetime ref="dateTime" :type="type" :unitTop="false" :radius="false"
 			@confirm="changeDateTime"></tui-datetime> -->
-		<tui-upload @complete="uploadComplete"></tui-upload>
+		<tui-upload @complete="uploadComplete" :limit="1"></tui-upload>
 		<tui-button @click="saveProject">保存</tui-button>
 	</view>
 </template>
@@ -56,8 +56,6 @@
 				return true;
 			},
 			checkNameDuplicate() {
-
-				console.log(storage.getProjectInfoByName(this.project.name));
 				return !storage.getProjectInfoByName(this.project.name);
 			},
 			addProjectInfoToStorage() {
@@ -87,7 +85,6 @@
 
 			},
 			uploadComplete(param) {
-				console.log(param);
 				if (param.status === 1) {
 					const filePaths = param.imgArr;
 					this.project.imagePath = filePaths[0];
