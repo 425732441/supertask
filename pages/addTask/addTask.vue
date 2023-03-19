@@ -1,14 +1,15 @@
 <template>
 	<view class="container">
-		<uni-forms :label-width="120" label-align="left">
-			<uni-forms-item label="任务名称" required>
-				<uni-easyinput v-model="taskName" placeholder="请输入任务名称"></uni-easyinput>
+		<uni-forms ref="taskForm" :label-width="120" :model="taskInfo" :rules="rules" label-align="left">
+			<uni-forms-item label="任务名称" name="taskName" required>
+				<uni-easyinput :focus="true" v-model="taskInfo.taskName" placeholder="请输入任务名称"></uni-easyinput>
 			</uni-forms-item>
-			<uni-forms-item label="任务截止日期" required>
-				<uni-datetime-picker v-model="taskDeadline" type="date" placeholder="请选择任务截止日期"></uni-datetime-picker>
+			<uni-forms-item label="任务截止日期">
+				<uni-datetime-picker v-model="taskInfo.taskDeadline" type="datetime"
+					placeholder="请选择任务截止日期"></uni-datetime-picker>
 			</uni-forms-item>
 			<uni-forms-item label="任务优先级">
-				<uni-data-checkbox v-model="taskTag" :localdata="taskTags" />
+				<uni-data-checkbox v-model="taskInfo.taskPriority" :localdata="taskPriorities" />
 			</uni-forms-item>
 			<uni-forms-item class="tagItem" label="任务标签">
 				<uni-tag type="primary" text="工作">工作</uni-tag>
@@ -16,7 +17,7 @@
 				<uni-tag type="warning" text="生活">生活</uni-tag>
 			</uni-forms-item>
 			<uni-forms-item label="任务描述">
-				<uni-easyinput type="textarea" v-model="taskDescription" placeholder="请输入任务描述"></uni-easyinput>
+				<uni-easyinput type="textarea" v-model="taskInfo.taskDescription" placeholder="请输入任务描述"></uni-easyinput>
 			</uni-forms-item>
 			<button type="primary" @click="submitForm">提交</button>
 		</uni-forms>
@@ -27,12 +28,26 @@
 	export default {
 		data() {
 			return {
-				taskName: '',
-				taskTag: null,
-				taskDescription: '',
-				taskDeadline: '',
-				taskPriority: 'medium',
-				taskTags: [{
+				rules: {
+					// 对name字段进行必填验证
+					"taskName": {
+						rules: [{
+							required: true,
+							errorMessage: '请输入任务名称',
+						}]
+					}
+				},
+				taskInfo: {
+					taskName: '',
+					taskTag: null,
+					taskStatus: 'finished',
+					taskDescription: '',
+					taskDeadline: '',
+					taskStartTime: '',
+					taskPriority: 1
+
+				},
+				taskPriorities: [{
 					text: '高',
 					value: 0
 				}, {
@@ -46,6 +61,13 @@
 		},
 		methods: {
 			submitForm() {
+				this.$refs.taskForm.validate().then(res => {
+					console.log('表单数据信息：', res);
+					uni.$emit("addTask", this.taskInfo);
+
+				}).catch(err => {
+					console.log('表单错误信息：', err);
+				})
 				// 处理表单提交逻辑
 			}
 		}

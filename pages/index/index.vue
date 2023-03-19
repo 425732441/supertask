@@ -75,7 +75,7 @@
 			deleteProject(item) {
 				const i = this.projects.findIndex(i => i.name === item.name);
 				this.projects.splice(i, 1);
-				storage.setProjectInfoToStorage(this.projects);
+				storage.setProjectsToStorage(this.projects);
 			},
 			clickFab(index) {
 				// this.projects.push({id:11});

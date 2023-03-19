@@ -13,7 +13,7 @@
 		<uni-section title="项目图标" sub-title="请选择一张图片作为项目图标" type="line">
 			<uni-file-picker fileMediatype="image" mode="grid" @select="uploadComplete" @fail="fail" :limit="1" />
 		</uni-section>
-		<button @click="saveProject">保存</button>
+		<button type="primary" @click="saveProject">保存</button>
 	</view>
 </template>
 
@@ -72,7 +72,7 @@
 					projects = [];
 					projects.push(this.project);
 				}
-				storage.setProjectInfoToStorage(projects);
+				storage.setProjectsToStorage(projects);
 			},
 			saveProject() {
 				if (this.checkBeforeSave()) {

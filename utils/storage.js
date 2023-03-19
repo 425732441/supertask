@@ -2,7 +2,7 @@ export default {
 	getProjectsFromStorage() {
 		return !!uni.getStorageSync("projects") ? uni.getStorageSync("projects") : [];
 	},
-	setProjectInfoToStorage(projects) {
+	setProjectsToStorage(projects) {
 		uni.setStorageSync("projects", projects);
 	},
 	getProjectInfoByName(name) {
