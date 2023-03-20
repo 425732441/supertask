@@ -27,14 +27,12 @@
 						style: {
 							color: '#fff',
 							fontsize: 30, //单位rpx
-							width: 70, //单位px
 							backgroundColor: '#FD3B31'
 						}
 					},
 					{
 						text: '修改',
 						style: {
-							width: 70,
 							fontsize: 30,
 							color: '#fff',
 							backgroundColor: '#C8C7CD'

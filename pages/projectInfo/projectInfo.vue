@@ -3,8 +3,18 @@
 		<uni-section type="line" title="任务列表" sub-title="按右下角➕号添加任务">
 		</uni-section>
 		<view>
-			<taskInfoCard v-for="(task,index) in project.tasks" :taskInfoProp="task">
-			</taskInfoCard>
+			<uni-swipe-action ref="swipeAction">
+				<uni-swipe-action-item :show="showAction" :key="index" v-for="(task,index) in project.tasks"
+					@change="changeSwipe($event,task)" :auto-close="false" @click="clickActionButton($event,task)"
+					:right-options="rightOptions">
+					<!-- <template v-slot:right>
+						<view>
+							<text>滑动完成</text>
+						</view>
+					</template> -->
+					<taskInfoCard :taskInfoProp="task" />
+				</uni-swipe-action-item>
+			</uni-swipe-action>
 			<z-no-data v-if="!project.tasks" imgUrl="/static/images/toast/img_nodata.png">暂无数据</z-no-data>
 		</view>
 
@@ -17,9 +27,18 @@
 	export default {
 		data() {
 			return {
+				rightOptions: [{
+					text: '松开完成任务',
+					style: {
+						color: '#fff',
+						fontsize: 30, //单位rpx
+						backgroundColor: '#FD3B31'
+					}
+				}],
 				project: {
 					name: ''
-				}
+				},
+				showAction: 'none'
 
 			}
 		},
@@ -32,6 +51,15 @@
 			uni.$on("addTask", this.addTask);
 		},
 		methods: {
+			clickActionButton(e, task) {
+				console.log(e, task);
+			},
+			changeSwipe(e, task) {
+				if (e === 'right') {
+					console.log(this.showAction);
+					console.log('完成任务', task.taskName, e, task);
+				}
+			},
 			addTask(taskInfo) {
 				// 保存任务信息到当前项目中
 				this.project.tasks = this.project.tasks || [];

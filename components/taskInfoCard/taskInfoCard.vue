@@ -1,6 +1,7 @@
 <template>
 	<view class="card-container">
-		<uni-card :style="{'--card-color':cardColor}" :title="taskInfo.taskName"
+
+		<uni-card is-full :style="{'--card-color':cardColor}" :title="taskInfo.taskName"
 			:extra="('优先级：'+taskInfo.taskPriority)">
 			<!-- :sub-title="'截止日期：' +this.taskInfo.taskDeadline" :extra="('优先级：'+this.taskInfo.taskPriority) || '' " -->
 
@@ -21,20 +22,22 @@
 
 
 			<!-- <view slot="actions" class="card-actions">
-					<view class="card-actions-item" @click="actionsClick('分享')">
-						<uni-icons type="pengyouquan" size="18" color="#999"></uni-icons>
-						<text class="card-actions-item-text">分享</text>
-					</view>
-					<view class="card-actions-item" @click="actionsClick('点赞')">
-						<uni-icons type="heart" size="18" color="#999"></uni-icons>
-						<text class="card-actions-item-text">点赞</text>
-					</view>
-					<view class="card-actions-item" @click="actionsClick('评论')">
-						<uni-icons type="chatbubble" size="18" color="#999"></uni-icons>
-						<text class="card-actions-item-text">评论</text>
-					</view>
-				</view> -->
+							<view class="card-actions-item" @click="actionsClick('分享')">
+								<uni-icons type="pengyouquan" size="18" color="#999"></uni-icons>
+								<text class="card-actions-item-text">分享</text>
+							</view>
+							<view class="card-actions-item" @click="actionsClick('点赞')">
+								<uni-icons type="heart" size="18" color="#999"></uni-icons>
+								<text class="card-actions-item-text">点赞</text>
+							</view>
+							<view class="card-actions-item" @click="actionsClick('评论')">
+								<uni-icons type="chatbubble" size="18" color="#999"></uni-icons>
+								<text class="card-actions-item-text">评论</text>
+							</view>
+						</view> -->
 		</uni-card>
+
+
 
 	</view>
 </template>
@@ -47,6 +50,9 @@
 				type: Object,
 				default: null
 			}
+		},
+		methods: {
+
 		},
 		onLoad() {
 			// this.taskInfo = this.taskInfoProp;
@@ -67,6 +73,7 @@
 		},
 		data() {
 			return {
+
 				taskInfo: this.taskInfoProp
 				// {
 				// 	taskName: '',
@@ -92,9 +99,12 @@
 	}
 
 	.card-container {
-		margin: 10upx;
+		margin: 10upx 1upx;
+		// border-bottom: 1px solid $uni-border-color;
+		// border-radius: $uni-border-radius-lg;
 
 		/deep/ .uni-card {
+			border-radius: $uni-border-radius-lg;
 			background-color: var(--card-color);
 		}
 
