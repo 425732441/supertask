@@ -40,7 +40,7 @@
 				taskInfo: {
 					taskName: '',
 					taskTag: null,
-					taskStatus: 'finished',
+					taskStatus: 'notstart',
 					taskDescription: '',
 					taskDeadline: '',
 					taskStartTime: '',

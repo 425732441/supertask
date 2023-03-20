@@ -1,6 +1,7 @@
 <template>
 	<view class="card-container">
-		<uni-card :class="cardStatusClass" :title="taskInfo.taskName" :extra="('优先级：'+taskInfo.taskPriority)">
+		<uni-card :style="{'--card-color':cardColor}" :title="taskInfo.taskName"
+			:extra="('优先级：'+taskInfo.taskPriority)">
 			<!-- :sub-title="'截止日期：' +this.taskInfo.taskDeadline" :extra="('优先级：'+this.taskInfo.taskPriority) || '' " -->
 
 			<view class="card_title">
@@ -20,20 +21,21 @@
 
 
 			<!-- <view slot="actions" class="card-actions">
-				<view class="card-actions-item" @click="actionsClick('分享')">
-					<uni-icons type="pengyouquan" size="18" color="#999"></uni-icons>
-					<text class="card-actions-item-text">分享</text>
-				</view>
-				<view class="card-actions-item" @click="actionsClick('点赞')">
-					<uni-icons type="heart" size="18" color="#999"></uni-icons>
-					<text class="card-actions-item-text">点赞</text>
-				</view>
-				<view class="card-actions-item" @click="actionsClick('评论')">
-					<uni-icons type="chatbubble" size="18" color="#999"></uni-icons>
-					<text class="card-actions-item-text">评论</text>
-				</view>
-			</view> -->
+					<view class="card-actions-item" @click="actionsClick('分享')">
+						<uni-icons type="pengyouquan" size="18" color="#999"></uni-icons>
+						<text class="card-actions-item-text">分享</text>
+					</view>
+					<view class="card-actions-item" @click="actionsClick('点赞')">
+						<uni-icons type="heart" size="18" color="#999"></uni-icons>
+						<text class="card-actions-item-text">点赞</text>
+					</view>
+					<view class="card-actions-item" @click="actionsClick('评论')">
+						<uni-icons type="chatbubble" size="18" color="#999"></uni-icons>
+						<text class="card-actions-item-text">评论</text>
+					</view>
+				</view> -->
 		</uni-card>
+
 	</view>
 </template>
 
@@ -50,10 +52,18 @@
 			// this.taskInfo = this.taskInfoProp;
 			// console.log(this.taskInfo);
 		},
+		mounted() {},
+		options: { styleIsolation: 'shared' },
 		computed: {
-			cardStatusClass() {
-				return 'card_status_class_' + (this.taskInfo.taskStatus || 'notstart');
-			}
+			cardColor() {
+				let m = {
+					"notstart": '#ffd7d9',
+					"inprogress": '#fff1a6',
+					"finished": '#c7ffae'
+				}
+				return m[this.taskInfo.taskStatus] || '#ffd7d9';
+			},
+
 		},
 		data() {
 			return {
@@ -77,8 +87,16 @@
 </script>
 
 <style scoped lang="scss">
+	:root {
+		--card-color: #fff;
+	}
+
 	.card-container {
 		margin: 10upx;
+
+		/deep/ .uni-card {
+			background-color: var(--card-color);
+		}
 
 		.card_status_class_notstart {
 			background-color: #ffd7d9;
