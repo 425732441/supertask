@@ -1,23 +1,21 @@
 <template>
 	<view>
 		<uni-section type="line" title="任务列表" sub-title="按右下角➕号添加任务">
+			<view>
+				<uni-swipe-action ref="swipeAction">
+					<uni-swipe-action-item :key="index" v-for="(task,index) in project.tasks" :threshold='30'
+						@change="changeSwipe($event,task)" :auto-close="true" @click="clickActionButton($event,task)">
+						<template v-slot:right>
+							<view class="action-button-wrap">
+								<text style="writing-mode: vertical-lr;">完成任务</text>
+							</view>
+						</template>
+						<taskInfoCard :taskInfoProp="task" />
+					</uni-swipe-action-item>
+				</uni-swipe-action>
+				<z-no-data v-if="!project.tasks" imgUrl="/static/images/toast/img_nodata.png">暂无数据</z-no-data>
+			</view>
 		</uni-section>
-		<view>
-			<uni-swipe-action ref="swipeAction">
-				<uni-swipe-action-item :show="showAction" :key="index" v-for="(task,index) in project.tasks"
-					@change="changeSwipe($event,task)" :auto-close="false" @click="clickActionButton($event,task)"
-					:right-options="rightOptions">
-					<!-- <template v-slot:right>
-						<view>
-							<text>滑动完成</text>
-						</view>
-					</template> -->
-					<taskInfoCard :taskInfoProp="task" />
-				</uni-swipe-action-item>
-			</uni-swipe-action>
-			<z-no-data v-if="!project.tasks" imgUrl="/static/images/toast/img_nodata.png">暂无数据</z-no-data>
-		</view>
-
 		<uni-fab @fabClick="fabClick" horizontal="right"></uni-fab>
 	</view>
 </template>
@@ -27,19 +25,9 @@
 	export default {
 		data() {
 			return {
-				rightOptions: [{
-					text: '松开完成任务',
-					style: {
-						color: '#fff',
-						fontsize: 30, //单位rpx
-						backgroundColor: '#FD3B31'
-					}
-				}],
 				project: {
 					name: ''
 				},
-				showAction: 'none'
-
 			}
 		},
 		onLoad(e) {
@@ -56,7 +44,12 @@
 			},
 			changeSwipe(e, task) {
 				if (e === 'right') {
-					console.log(this.showAction);
+					task.taskStatus = 'finished';
+					console.log(this.$refs.swipeAction);
+					setTimeout(() => {
+						this.$refs.swipeAction.closeAll();
+					}, 500)
+
 					console.log('完成任务', task.taskName, e, task);
 				}
 			},
@@ -96,6 +89,13 @@
 	.status_bar {
 		height: var(--status-bar-height);
 		width: 100%;
+	}
+
+	.action-button-wrap {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 70upx;
 	}
 
 </style>
