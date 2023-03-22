@@ -86,11 +86,6 @@
 </script>
 
 <style>
-	.status_bar {
-		height: var(--status-bar-height);
-		width: 100%;
-	}
-
 	.action-button-wrap {
 		display: flex;
 		justify-content: center;
