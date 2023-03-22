@@ -18,7 +18,7 @@
 </template>
 
 <script>
-	import storage from '@/utils/storage.js';
+	import { mapGetters, mapMutations } from 'vuex';
 	export default {
 		data() {
 			return {
@@ -43,13 +43,17 @@
 				title: 'Hello'
 			}
 		},
+		onReady() {},
 		onShow() {
-			this.projects = storage.getProjectsFromStorage() || [];
+			this.projects = this.getProjects() || [];
+
 		},
 		onLoad() {
 
 		},
 		methods: {
+			...mapGetters(['getProjects']),
+			...mapMutations(['setProjects']),
 			showProjectInfo(name) {
 				uni.navigateTo({
 					url: '/pages/projectInfo/projectInfo?name=' + name,
@@ -73,7 +77,7 @@
 			deleteProject(item) {
 				const i = this.projects.findIndex(i => i.name === item.name);
 				this.projects.splice(i, 1);
-				storage.setProjectsToStorage(this.projects);
+				this.setProjects(this.projects)
 			},
 			clickFab(index) {
 				// this.projects.push({id:11});

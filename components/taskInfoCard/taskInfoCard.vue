@@ -14,7 +14,7 @@
 						</view> -->
 						<view class="uni-card__header-content">
 							<text
-								class="uni-card__header-content-title uni-ellipsis">{{ taskInfoProp.taskName + (taskInfoProp.taskStatus ? `[${taskInfoProp.taskStatus}]` :'' ) }}</text>
+								class="uni-card__header-content-title uni-ellipsis">{{ taskInfoProp.taskName + (taskInfoProp.taskStatus ? ` [${taskStatusText}]` :'' ) }}</text>
 							<!-- <uni-tag size="mini" :inverted="true" :circle="true" type="primary"
 								:text="taskInfoProp.taskStatus" /> -->
 							<!-- <text v-if="title&&subTitle"
@@ -65,6 +65,11 @@
 </template>
 
 <script>
+	let taskStatusMap = {
+		notstart: { color: '#ffd7d9', text: '未开始' },
+		inprogress: { color: '#fff1a6', text: '进行中' },
+		finished: { color: '#c7ffae', text: '已完成' }
+	}
 	export default {
 		name: "taskInfoCard",
 		props: {
@@ -84,13 +89,11 @@
 		options: { styleIsolation: 'shared' },
 		computed: {
 			cardColor() {
-				let m = {
-					notstart: '#ffd7d9',
-					inprogress: '#fff1a6',
-					finished: '#c7ffae'
-				}
-				return m[this.taskInfoProp.taskStatus] || '#ffd7d9';
+				return taskStatusMap[this.taskInfoProp.taskStatus].color || '#ffd7d9';
 			},
+			taskStatusText() {
+				return taskStatusMap[this.taskInfoProp.taskStatus].text;
+			}
 
 		},
 		data() {

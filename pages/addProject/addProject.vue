@@ -19,7 +19,7 @@
 
 <script>
 	import dayjs from 'dayjs';
-	import storage from '@/utils/storage.js';
+	import { mapGetters, mapMutations } from 'vuex';
 	export default {
 		data() {
 			return {
@@ -36,6 +36,8 @@
 			}
 		},
 		methods: {
+			...mapGetters(['getProjects', 'getProjectInfoByName']),
+			...mapMutations(['setProjects']),
 			changeDateTime(e) {
 				console.log(e);
 			},
@@ -61,18 +63,18 @@
 				return true;
 			},
 			checkNameDuplicate() {
-				return !storage.getProjectInfoByName(this.project.name);
+				return !(this.$store.getters.getProjectInfoByName(this.project.name));
 			},
 			addProjectInfoToStorage() {
 				this.project.createTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
-				let projects = storage.getProjectsFromStorage();
+				let projects = this.getProjects();
 				if (projects) {
 					projects.push(this.project);
 				} else {
 					projects = [];
 					projects.push(this.project);
 				}
-				storage.setProjectsToStorage(projects);
+				this.setProjects(projects);
 			},
 			saveProject() {
 				if (this.checkBeforeSave()) {
