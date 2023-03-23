@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<uni-section type="line" title="任务列表" sub-title="按右下角➕号添加任务,左滑任务可以快速完成当前任务">
+		<uni-section type="line" title="任务列表" sub-title="按右下角➕号添加任务,👉🏻滑任务可以快速完成当前任务">
 			<view>
 				<uni-swipe-action ref="swipeAction">
 					<uni-swipe-action-item :key="index" v-for="(task,index) in project.tasks" :threshold='30'
@@ -34,26 +34,50 @@
 			project: {
 				handler: function(n, o) {
 					console.log('watch project', n);
-					// this.setProjects(n);
+					this.setProjects(this.getProjects());
 				},
 				deep: true
 			}
 		},
+		onBackPress(e) {
+			console.log('back press', e);
+			this.back();
+			return true;
+		},
+		onUnload() {
+			console.log('onunload');
+			// this.back();
+			//如果多端发布的话判断一下当前操作的客户端 
+			//#ifdef MP-WEIXIN
+			wx.reLaunch({
+				url: '/pages/index/index'
+			})
+			//#endif
+		},
+
 		onLoad(e) {
-			console.log(e.name, this);
+			console.log('oload ', e.name, this.$store);
 			console.log(this.$store.getters.getProjectInfoByName(e.name));
 
 			this.project = this.$store.getters.getProjectInfoByName(e.name);
 			uni.setNavigationBarTitle({
 				'title': e.name + '-项目详情'
 			});
-			uni.$once("addTask", this.addTask);
 		},
 		methods: {
 			...mapGetters(['getProjects', 'getProjectInfoByName']),
 			...mapMutations(['setProjects']),
 			clickActionButton(e, task) {
 				console.log(e, task);
+			},
+
+			back() {
+				uni.switchTab({
+					url: '/pages/index/index',
+					success: res => {},
+					fail: () => {},
+					complete: () => {}
+				});
 			},
 			changeSwipe(e, task) {
 				if (e === 'left') {
@@ -66,24 +90,11 @@
 					console.log('完成任务', task.taskName, e, task);
 				}
 			},
-			saveTaskToProject(taskInfo) {
-				this.project.tasks.push(taskInfo);
-			},
-			addTask(taskInfo) {
-				// 保存任务信息到当前项目中
-				console.log('addTask');
-				this.project.tasks = this.project.tasks || [];
-				this.saveTaskToProject(taskInfo);
-				uni.navigateTo({
-					url: '/pages/projectInfo/projectInfo?name=' + this.project.name,
-					success: res => {},
-					fail: () => {},
-					complete: () => {}
-				});
-			},
+
+
 			fabClick() {
 				uni.navigateTo({
-					url: '/pages/addTask/addTask',
+					url: '/pages/addTask/addTask?projectName=' + this.project.name,
 					success: res => {},
 					fail: () => {},
 					complete: () => {}

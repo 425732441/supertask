@@ -1,8 +1,7 @@
 <template>
 	<view class="card-container">
 
-		<uni-card is-full :style="'--card-color:'+cardColor" :title="taskInfoProp.taskName"
-			:extra="('优先级：'+taskInfoProp.taskPriority)">
+		<uni-card is-full :style="'--card-color:'+cardColor">
 			<!-- :sub-title="'截止日期：' +this.taskInfo.taskDeadline" :extra="('优先级：'+this.taskInfo.taskPriority) || '' " -->
 
 			<template v-slot:title>
@@ -21,7 +20,7 @@
 								class="uni-card__header-content-subtitle uni-ellipsis">{{ subTitle }}</text> -->
 						</view>
 					</view>
-					<view class="uni-card__header-extra" @click="onClick('extra')">
+					<view class="uni-card__header-extra" @click="">
 						<text class="uni-card__header-extra-text">{{ ('优先级：'+taskInfoProp.taskPriority) || '' }}</text>
 					</view>
 				</view>
@@ -66,7 +65,7 @@
 
 <script>
 	let taskStatusMap = {
-		notstart: { color: '#ffd7d9', text: '未开始' },
+		notstart: { color: '#f5fffc', text: '未开始' },
 		inprogress: { color: '#fff1a6', text: '进行中' },
 		finished: { color: '#c7ffae', text: '已完成' }
 	}

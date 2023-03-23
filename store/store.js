@@ -8,11 +8,14 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 	// 全局共享数据
 	state: {
-		projects: storage.getProjectsFromStorage() || []
+		projects: storage.getProjectsFromStorage()
 	},
 	getters: {
 		getProjects: state => state.projects,
-		getProjectInfoByName: (state) => (name) => { return state.projects.find(p => p.name === name) }
+		getProjectInfoByName: (state) => (name) => {
+			console.log(state.projects);
+			return state.projects.find(p => p.name === name)
+		}
 
 
 	},

@@ -25,7 +25,11 @@
 </template>
 
 <script>
+	import { mapGetters, mapMutations } from 'vuex';
 	export default {
+		onLoad(e) {
+			this.projectName = e.projectName;
+		},
 		data() {
 			return {
 				rules: {
@@ -37,6 +41,7 @@
 						}]
 					}
 				},
+				projectName: '',
 				taskInfo: {
 					taskName: '',
 					taskTag: null,
@@ -60,11 +65,24 @@
 			}
 		},
 		methods: {
+			...mapGetters(['getProjectInfoByName']),
+			addTask(taskInfo) {
+				// 保存任务信息到当前项目中
+				let projectInState = this.$store.getters.getProjectInfoByName(this.projectName);
+				console.log('addTask', projectInState, this.projectName);
+				projectInState.tasks = (projectInState.tasks || []);
+				projectInState.tasks.push(taskInfo);
+				uni.navigateTo({
+					url: '/pages/projectInfo/projectInfo?name=' + this.projectName,
+					success: res => {},
+					fail: () => {},
+					complete: () => {}
+				});
+			},
 			submitForm() {
 				this.$refs.taskForm.validate().then(res => {
 					console.log('表单数据信息：', res);
-					uni.$emit("addTask", this.taskInfo);
-
+					this.addTask(this.taskInfo);
 				}).catch(err => {
 					console.log('表单错误信息：', err);
 				})
