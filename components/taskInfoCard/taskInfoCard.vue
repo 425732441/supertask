@@ -21,28 +21,35 @@
 						</view>
 					</view>
 					<view class="uni-card__header-extra" @click="">
-						<text class="uni-card__header-extra-text">{{ ('优先级：'+taskInfoProp.taskPriority) || '' }}</text>
+						<text class="uni-card__header-extra-text"> {{ ('优先级：'+ ( taskPriorityText || '')) }} </text>
 					</view>
 				</view>
 			</template>
 
-			<view class="card_title">
+			<view class="card_title"
+				v-if="taskFinishTime ||taskStartTime || taskInfoProp.taskDeadline || taskInfoProp.taskTag">
 				<view v-if="taskInfoProp.taskTag">
 					<uni-tag :text="taskInfoProp.taskTag.text" :type="taskInfoProp.taskTag.type"></uni-tag>
 				</view>
-				<view v-if="taskInfo.taskDeadline">
-					{{taskInfo.taskDeadline+" 截止"}}
+				<view v-if="taskInfoProp.taskStartTime">
+					{{taskStartTime+" 开始"}}
+				</view>
+				<view v-if="taskInfoProp.taskFinishTime">
+					{{taskFinishTime+" 完成"}}
+				</view>
+				<view v-if="taskInfoProp.taskDeadline">
+					{{taskInfoProp.taskDeadline+" 截止"}}
 				</view>
 			</view>
 
-			<view class="uni-body">
+			<view class="uni-body" v-if="taskInfoProp.taskDescription">
 				<text>
-					{{taskInfo.taskDescription}}
+					{{taskInfoProp.taskDescription}}
 				</text>
 			</view>
 
 
-			<!-- <view slot="actions" class="card-actions">
+			<!--<view slot="actions" class="card-actions">
 							<view class="card-actions-item" @click="actionsClick('分享')">
 								<uni-icons type="pengyouquan" size="18" color="#999"></uni-icons>
 								<text class="card-actions-item-text">分享</text>
@@ -55,7 +62,7 @@
 								<uni-icons type="chatbubble" size="18" color="#999"></uni-icons>
 								<text class="card-actions-item-text">评论</text>
 							</view>
-						</view> -->
+						</view>-->
 		</uni-card>
 
 
@@ -64,11 +71,7 @@
 </template>
 
 <script>
-	let taskStatusMap = {
-		notstart: { color: '#f5fffc', text: '未开始' },
-		inprogress: { color: '#fff1a6', text: '进行中' },
-		finished: { color: '#c7ffae', text: '已完成' }
-	}
+	import { taskInfoUtil } from '@/utils/taskInfoUtil';
 	export default {
 		name: "taskInfoCard",
 		props: {
@@ -88,10 +91,19 @@
 		options: { styleIsolation: 'shared' },
 		computed: {
 			cardColor() {
-				return taskStatusMap[this.taskInfoProp.taskStatus].color || '#ffd7d9';
+				return taskInfoUtil.taskStatusMap[this.taskInfoProp.taskStatus].color || '#ffd7d9';
 			},
 			taskStatusText() {
-				return taskStatusMap[this.taskInfoProp.taskStatus].text;
+				return taskInfoUtil.taskStatusMap[this.taskInfoProp.taskStatus].text;
+			},
+			taskPriorityText() {
+				return taskInfoUtil.getTaskPriorityText(this.taskInfoProp.taskPriority);
+			},
+			taskStartTime() {
+				return this.taskInfoProp.taskStartTime;
+			},
+			taskFinishTime() {
+				return this.taskInfoProp.taskFinishTime;
 			}
 
 		},
@@ -118,6 +130,7 @@
 </script>
 
 <style scoped lang="scss">
+	@import "@/uni.scss";
 	$uni-border-3: #EBEEF5 !default;
 	$uni-shadow-base: 0 0px 6px 1px rgba($color: #a5a5a5, $alpha: 0.2) !default;
 	$uni-main-color: #3a3a3a !default;
@@ -127,25 +140,26 @@
 	$uni-border-color: $uni-border-3;
 	$uni-shadow: $uni-shadow-base;
 	$uni-card-title: 15px;
-	$uni-cart-title-color: $uni-main-color;
+	$uni-card-title-color: $uni-main-color;
 	$uni-card-subtitle: 12px;
-	$uni-cart-subtitle-color: $uni-secondary-color;
+	$uni-card-subtitle-color: $uni-secondary-color;
 	$uni-card-spacing: 10px;
 	$uni-card-content-color: $uni-base-color;
+
 
 	:root {
 		--card-color: #fff;
 	}
 
 	.card-container {
-		margin: 10upx 1upx;
-		// border-bottom: 1px solid $uni-border-color;
+		margin: $uni-card-container-margin; // border-bottom: 1px solid $uni-border-color;
 		// border-radius: $uni-border-radius-lg;
 
 		/deep/ .uni-card {
 			border-radius: $uni-border-radius-lg;
 			background-color: var(--card-color);
 		}
+
 
 		.title-wrap {
 			display: flex;
@@ -157,7 +171,9 @@
 
 
 		.card_title {
+			border-bottom: 1px $uni-border-color solid;
 			display: flex;
+			flex-direction: column;
 			justify-content: space-between;
 			align-items: baseline;
 		}
@@ -207,14 +223,14 @@
 
 				.uni-card__header-content-title {
 					font-size: $uni-card-title;
-					color: $uni-cart-title-color;
+					color: $uni-card-title-color;
 					// line-height: 22px;
 				}
 
 				.uni-card__header-content-subtitle {
 					font-size: $uni-card-subtitle;
 					margin-top: 5px;
-					color: $uni-cart-subtitle-color;
+					color: $uni-card-subtitle-color;
 				}
 			}
 
@@ -223,7 +239,7 @@
 
 				.uni-card__header-extra-text {
 					font-size: 12px;
-					color: $uni-cart-subtitle-color;
+					color: $uni-card-subtitle-color;
 				}
 			}
 		}

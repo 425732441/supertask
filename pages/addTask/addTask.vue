@@ -11,11 +11,11 @@
 			<uni-forms-item label="任务优先级">
 				<uni-data-checkbox v-model="taskInfo.taskPriority" :localdata="taskPriorities" />
 			</uni-forms-item>
-			<uni-forms-item class="tagItem" label="任务标签">
+			<!-- <uni-forms-item class="tagItem" label="任务标签">
 				<uni-tag type="primary" text="工作">工作</uni-tag>
 				<uni-tag type="success" text="学习">学习</uni-tag>
 				<uni-tag type="warning" text="生活">生活</uni-tag>
-			</uni-forms-item>
+			</uni-forms-item> -->
 			<uni-forms-item label="任务描述">
 				<uni-easyinput type="textarea" v-model="taskInfo.taskDescription" placeholder="请输入任务描述"></uni-easyinput>
 			</uni-forms-item>
@@ -49,6 +49,7 @@
 					taskDescription: '',
 					taskDeadline: '',
 					taskStartTime: '',
+					taskFinishTime: '',
 					taskPriority: 1
 
 				},

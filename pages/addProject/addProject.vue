@@ -30,7 +30,8 @@
 					name: '',
 					createTime: '',
 					imagePath: '',
-					imagePaths: null
+					imagePaths: null,
+					tasks: []
 				}
 
 			}
