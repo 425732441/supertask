@@ -25,13 +25,52 @@
 </template>
 
 <script>
+	const taskInfoTemplate = {
+		taskName: '',
+		taskTag: null,
+		taskStatus: 'notstart',
+		taskDescription: '',
+		taskDeadline: '',
+		taskStartTime: '',
+		taskFinishTime: '',
+		taskPriority: 1
+
+	};
 	import { mapGetters, mapMutations } from 'vuex';
 	export default {
 		onLoad(e) {
-			this.projectName = e.projectName;
+			if (e.mode) {
+				this.mode = e.mode;
+				uni.setNavigationBarTitle({
+					title: `任务${this.mode === 'add'? '添加':'编辑'}`
+				})
+			}
+			//重新初始化taskFromState taskInfo
+			this.taskFromState = { ...taskInfoTemplate };
+			this.taskInfo = { ...taskInfoTemplate };
+			// 编辑
+			const eventChannel = this.getOpenerEventChannel();
+			eventChannel.on("loadPageSaveTask", (data) => {
+				// data.task为state中的数据，是响应式的，因此不能直接改，
+				// 收到后放入新对象中存起来做展示和用于修改，修改结束后保存时赋值给data.task即可触发全局数据的更新
+				// this.setProjects(this.getProjects());
+
+				if (data.task) {
+					this.taskFromState = data.task;
+					// taskInfo 使用一个新对象来赋值，放值修改taskInfo后触发state更新projects的数据
+					this.taskInfo = { ...data.task };
+				}
+				if (data.project) {
+					this.projectFromState = data.project;
+				}
+
+			})
 		},
 		data() {
 			return {
+				mode: 'add',
+				taskFromState: taskInfoTemplate,
+				projectFromState: null,
 				rules: {
 					// 对name字段进行必填验证
 					"taskName": {
@@ -42,17 +81,7 @@
 					}
 				},
 				projectName: '',
-				taskInfo: {
-					taskName: '',
-					taskTag: null,
-					taskStatus: 'notstart',
-					taskDescription: '',
-					taskDeadline: '',
-					taskStartTime: '',
-					taskFinishTime: '',
-					taskPriority: 1
-
-				},
+				taskInfo: taskInfoTemplate,
 				taskPriorities: [{
 					text: '高',
 					value: 0
@@ -66,15 +95,22 @@
 			}
 		},
 		methods: {
-			...mapGetters(['getProjectInfoByName']),
-			addTask(taskInfo) {
+			...mapGetters(['getProjects', 'getProjectInfoByName']),
+			...mapMutations(['setProjects']),
+			saveTask(taskInfo) {
 				// 保存任务信息到当前项目中
-				let projectInState = this.$store.getters.getProjectInfoByName(this.projectName);
-				console.log('addTask', projectInState, this.projectName);
-				projectInState.tasks = (projectInState.tasks || []);
-				projectInState.tasks.push(taskInfo);
+
+				if (this.mode === 'edit') {
+					for (const key in this.taskFromState) {
+						this.taskFromState[key] = this.taskInfo[key];
+					}
+					console.log(this.getProjects());
+				} else {
+					this.projectFromState.tasks = (this.projectFromState.tasks || []);
+					this.projectFromState.tasks.push(taskInfo);
+				}
 				uni.navigateTo({
-					url: '/pages/projectInfo/projectInfo?name=' + this.projectName,
+					url: '/pages/projectInfo/projectInfo?name=' + this.projectFromState.name,
 					success: res => {},
 					fail: () => {},
 					complete: () => {}
@@ -82,8 +118,7 @@
 			},
 			submitForm() {
 				this.$refs.taskForm.validate().then(res => {
-					console.log('表单数据信息：', res);
-					this.addTask(this.taskInfo);
+					this.saveTask(this.taskInfo);
 				}).catch(err => {
 					console.log('表单错误信息：', err);
 				})

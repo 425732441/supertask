@@ -11,40 +11,65 @@
 		<tui-datetime ref="dateTime" :type="type" :unitTop="false" :radius="false"
 			@confirm="changeDateTime"></tui-datetime> -->
 		<uni-section title="项目图标" sub-title="请选择一张图片作为项目图标" type="line">
-			<uni-file-picker fileMediatype="image" mode="grid" @select="uploadComplete" @fail="fail" :limit="1" />
+			<uni-file-picker :value="project.image" fileMediatype="image" mode="grid" @select="uploadComplete"
+				@fail="fail" @delete="deleteImage" :limit="1" />
 		</uni-section>
 		<button type="primary" @click="saveProject">保存</button>
 	</view>
 </template>
 
 <script>
+	const projectInfoTemplate = {
+		name: '',
+		createTime: '',
+		image: {},
+		tasks: []
+	};
 	import dayjs from 'dayjs';
 	import { mapGetters, mapMutations } from 'vuex';
 	export default {
+		onLoad(e) {
+			if (e.mode) {
+				this.mode = e.mode;
+				uni.setNavigationBarTitle({
+					title: `项目${this.mode === 'add'? '添加':'编辑'}`
+				})
+			}
+			//重新初始化
+			this.projectFromState = { ...projectInfoTemplate };
+			// this.project = { ...projectInfoTemplate };
+			this.project = JSON.parse(JSON.stringify(projectInfoTemplate));
+			console.log(this.project, { ...projectInfoTemplate });
+			// 编辑
+			const eventChannel = this.getOpenerEventChannel();
+			eventChannel.on("loadPageSaveProject", (data) => {
+				// data.project为state中的数据，是响应式的，因此不能直接改，
+				if (data.project) {
+					this.projectFromState = data.project;
+					this.project = { ...data.project };
+					console.log(this.projectFromState);
+				}
+
+			})
+
+		},
 		data() {
 			return {
+				mode: 'add',
+				projectFromState: projectInfoTemplate,
 				type: 1,
 				startYear: 2000,
 				endYear: 2099,
-				project: {
-					name: '',
-					createTime: '',
-					imagePath: '',
-					imagePaths: null,
-					tasks: []
-				}
+				project: projectInfoTemplate
 
 			}
 		},
 		methods: {
 			...mapGetters(['getProjects', 'getProjectInfoByName']),
 			...mapMutations(['setProjects']),
-			changeDateTime(e) {
-				console.log(e);
-			},
+			changeDateTime(e) {},
 			showDtPicker() {
 				this.$refs.dateTime.show();
-
 			},
 			checkBeforeSave() {
 				if (!this.project.name) {
@@ -64,22 +89,28 @@
 				return true;
 			},
 			checkNameDuplicate() {
+				if (this.mode === 'edit') {
+					if (this.projectFromState.name === this.project.name)
+						return true;
+				}
 				return !(this.$store.getters.getProjectInfoByName(this.project.name));
 			},
-			addProjectInfoToStorage() {
+			saveProjectInfoToStorage() {
 				this.project.createTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
 				let projects = this.getProjects();
-				if (projects) {
+				if (this.mode === 'add') {
 					projects.push(this.project);
-				} else {
-					projects = [];
-					projects.push(this.project);
+				} else if (this.mode === 'edit') {
+					for (const key in this.projectFromState) {
+						console.log(key);
+						this.projectFromState[key] = this.project[key];
+					}
 				}
 				this.setProjects(projects);
 			},
 			saveProject() {
 				if (this.checkBeforeSave()) {
-					this.addProjectInfoToStorage();
+					this.saveProjectInfoToStorage();
 
 					uni.switchTab({
 						url: '/pages/index/index',
@@ -93,15 +124,20 @@
 
 			},
 			uploadComplete(param) {
-				const filePaths = param.tempFilePaths;
-				this.project.imagePath = filePaths[0];
+				const files = param.tempFiles;
+				this.project.image.url = files[0].url;
+				this.project.image.name = files[0].name;
+				this.project.image.extname = files[0].extname;
+			},
+			deleteImage(param) {
+				this.project.image = {};
 			}
 
 		},
 		watch: {
 			'project': { // 对对象的某一个属性进行深度监听
 				handler(nv) {
-					console.log(nv)
+					// console.log(nv)
 				},
 				immediate: true,
 				deep: true

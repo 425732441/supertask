@@ -2,10 +2,10 @@
 	<view class="container">
 		<z-no-data v-if="projects.length <=0" imgUrl="/static/images/toast/img_nodata.png">暂无数据</z-no-data>
 		<uni-swipe-action>
-			<uni-swipe-action-item :right-options="actions" @click="handlerButton($event,item)"
+			<uni-swipe-action-item :right-options="actions" @click="handlerButton($event,item,index)"
 				v-for="(item,index) in projects" :key="index" :auto-close="true">
 				<view class="tui-list-item" @click="showProjectInfo(item.name)">
-					<image :src="(item.imagePath || '/static/images/basic/layout.png')" class="item-img"></image>
+					<image :src="(item.image.url || '/static/images/basic/layout.png')" class="item-img"></image>
 					<view class="item-box">
 						<view class="item-title">{{item.name}}</view>
 						<view class="item-time">{{ item.createTime }}</view>
@@ -13,6 +13,10 @@
 				</view>
 			</uni-swipe-action-item>
 		</uni-swipe-action>
+		<uni-popup ref="alertDialog" type="dialog">
+			<uni-popup-dialog type="warn" cancelText="取消" confirmText="确认" title="警告"
+				:content="`确认删除当前项目:${currentProjectName}？`" @confirm="confirm"></uni-popup-dialog>
+		</uni-popup>
 		<uni-fab horizontal="right" @fabClick="clickFab"></uni-fab>
 	</view>
 </template>
@@ -22,6 +26,7 @@
 	export default {
 		data() {
 			return {
+				currentProjectName: '',
 				actions: [{
 						text: '删除',
 						style: {
@@ -45,10 +50,10 @@
 		},
 		onReady() {},
 		onShow() {
-			this.projects = this.getProjects() || [];
 
 		},
 		onLoad() {
+			this.projects = this.getProjects();
 
 		},
 		methods: {
@@ -62,27 +67,40 @@
 					complete: () => {}
 				});
 			},
-			handlerButton(e, item) {
-				console.log(e);
+			handlerButton(e, item, i) {
 				let index = e.index;
-				let menuTxt = ["删除", "修改", "收藏"][index];
 				if (index === 0) {
 					// delete
-					this.deleteProject(item);
-					uni.showToast({
-						title: `${menuTxt}成功`,
+					this.currentProjectName = item.name;
+					this.currentProjectIndex = i;
+					this.$refs.alertDialog.open();
+
+				} else if (index === 1) {
+					// edit 
+
+					uni.navigateTo({
+						url: '/pages/saveProject/saveProject?mode=edit',
+						success: res => {
+							// 通过eventChannel向被打开页面传送数据
+							res.eventChannel.emit('loadPageSaveProject', { project: item })
+						},
+						fail: () => {},
+						complete: () => {}
 					});
 				}
 			},
-			deleteProject(item) {
-				const i = this.projects.findIndex(i => i.name === item.name);
-				this.projects.splice(i, 1);
+			confirm() {
+				// 删除确认
+				this.projects.splice(this.currentProjectIndex, 1);
 				this.setProjects(this.projects)
+				uni.showToast({
+					title: `删除成功`,
+				});
 			},
 			clickFab(index) {
 				// this.projects.push({id:11});
 				uni.navigateTo({
-					url: '/pages/addProject/addProject',
+					url: '/pages/saveProject/saveProject?mode=add',
 					success: res => {
 						// console.log(res);
 					},
