@@ -109,11 +109,8 @@
 					this.projectFromState.tasks = (this.projectFromState.tasks || []);
 					this.projectFromState.tasks.push(taskInfo);
 				}
-				uni.navigateTo({
-					url: '/pages/projectInfo/projectInfo?name=' + this.projectFromState.name,
-					success: res => {},
-					fail: () => {},
-					complete: () => {}
+				uni.navigateBack({
+					delta: 1
 				});
 			},
 			submitForm() {
