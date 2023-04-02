@@ -21,7 +21,7 @@
 		</uni-section>
 		<uni-fab @fabClick="fabClick" horizontal="right"></uni-fab>
 		<uni-popup ref="alertDialog" type="dialog">
-			<uni-popup-dialog :type="popupType" cancelText="取消" confirmText="确认" title="警告"
+			<uni-popup-dialog :type="popupType" cancelText="取消" confirmText="确认" title="提示"
 				:content="`确认删除当前任务:${currentTaskName}？`" @confirm="confirm"></uni-popup-dialog>
 		</uni-popup>
 	</view>
@@ -71,7 +71,6 @@
 
 		onLoad(e) {
 			this.project = this.$store.getters.getProjectInfoByName(e.name);
-			console.log(this.project.name, 'loaded');
 			uni.setNavigationBarTitle({
 				'title': e.name + '-项目详情'
 			});

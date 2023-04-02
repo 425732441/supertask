@@ -14,7 +14,7 @@
 			</uni-swipe-action-item>
 		</uni-swipe-action>
 		<uni-popup ref="alertDialog" type="dialog">
-			<uni-popup-dialog type="warn" cancelText="取消" confirmText="确认" title="警告"
+			<uni-popup-dialog type="warn" cancelText="取消" confirmText="确认" title="提示"
 				:content="`确认删除当前项目:${currentProjectName}？`" @confirm="confirm"></uni-popup-dialog>
 		</uni-popup>
 		<uni-fab horizontal="right" @fabClick="clickFab"></uni-fab>
