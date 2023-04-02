@@ -17,7 +17,8 @@
 				<uni-tag type="warning" text="生活">生活</uni-tag>
 			</uni-forms-item> -->
 			<uni-forms-item label="任务描述">
-				<uni-easyinput type="textarea" v-model="taskInfo.taskDescription" placeholder="请输入任务描述"></uni-easyinput>
+				<uni-easyinput type="textarea" maxlength="-1" autoHeight v-model="taskInfo.taskDescription"
+					placeholder="请输入任务描述"></uni-easyinput>
 			</uni-forms-item>
 			<button type="primary" @click="submitForm">提交</button>
 		</uni-forms>
